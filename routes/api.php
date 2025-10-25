@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\Auth\ResetPassword\PasswordResetController;
 use App\Http\Controllers\ClienteController\ClienteController;
+use App\Http\Controllers\Contador\ContadorController;
 use App\Http\Controllers\EvaluacionCliente\EvaluacionClienteController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,11 +19,14 @@ Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
 Route::middleware(['auth.jwt', 'checkRoleMW:admin'])->group(function () { 
 
+    // Ruta para crear un nuevo contador
+    Route::post('/contador/store', [ContadorController::class, 'store']);
 
 });
 
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
-Route::middleware(['auth.jwt', 'checkRoleMW:usuario'])->group(function () { 
+Route::middleware(['auth.jwt', 'checkRoleMW:contador'])->group(function () { 
+
 
 
 });
