@@ -24,7 +24,7 @@ class Datos extends Model
         return $this->hasOne(User::class, 'id_Datos', 'id');
     }
 
-    public function contactos()
+    public function contacto()
     {
         return $this->hasMany(Contacto::class, 'id_Datos' , 'id');
     }
