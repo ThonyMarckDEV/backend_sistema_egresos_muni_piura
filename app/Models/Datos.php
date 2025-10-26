@@ -26,7 +26,7 @@ class Datos extends Model
 
     public function contacto()
     {
-        return $this->hasMany(Contacto::class, 'id_Datos' , 'id');
+        return $this->hasOne(Contacto::class, 'id_Datos' , 'id');
     }
 
 }

@@ -24,6 +24,10 @@ Route::middleware(['auth.jwt', 'checkRoleMW:admin'])->group(function () {
     Route::post('/contador/store', [ContadorController::class, 'store']);
     // Ruta para listar los contadores
     Route::get('/contadores', [ContadorController::class, 'index']);
+    // Obtener un contador específico por ID
+    Route::get('/contador/{id}', [ContadorController::class, 'show']);  
+    // Actualizar un contador (usamos PUT para la actualización)
+    Route::put('/contador/{id}', [ContadorController::class, 'update']);
 
 });
 
