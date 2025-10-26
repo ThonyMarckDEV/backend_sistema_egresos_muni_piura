@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Contador;
 
+use App\Http\Controllers\Contador\utilities\UpdateContador;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Contador\utilities\StoreContador;
 use App\Http\Requests\Contador\StoreContadorRequest;
 use App\Http\Requests\Contador\UpdateContadorRequest;
 use App\Models\Contador;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-// Ya no necesitas importar:
-// - Request, DB, Hash, ValidationException, Contador, Datos, Contacto
+use Exception;
 
 class ContadorController extends Controller
 {
@@ -85,15 +85,11 @@ class ContadorController extends Controller
     public function show($id)
     {
         try {
-            // 1. Buscamos al contador con sus relaciones
             $contador = Contador::with(['datos.contacto'])->findOrFail($id);
 
-            // 2. Extraemos las relaciones de forma segura
-            // (Evita error si 'datos' o 'contacto' fueran null)
             $datos = $contador->datos;
             $contacto = $datos ? $datos->contacto : null;
 
-            // 3. Construimos la respuesta personalizada
             $responseData = [
                 // Objeto 'datos' (para DatosPersonalesFields)
                 'datos' => [
@@ -129,58 +125,37 @@ class ContadorController extends Controller
         }
     }
 
-    /**
-     * 3. NUEVO MÉTODO: Actualiza un contador existente.
+   /**
+     * 3. Actualiza un contador existente usando la utilidad UpdateContador.
      *
-     * @param  \App\Http\Requests\Contador\UpdateRequest  $request
+     * @param  \App\Http\Requests\Contador\UpdateContadorRequest  $request
      * @param  int  $id
+     * @param  \App\Utilities\UpdateContador $updater // Inyección de dependencia
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateContadorRequest $request, $id)
+    public function update(UpdateContadorRequest $request, $id, UpdateContador $updater)
     {
         // La validación ya la hizo UpdateRequest
         $validatedData = $request->validated();
         
-        // Buscamos el contador (Usuario) y sus datos
-        $contador = Contador::findOrFail($id);
-        $datos = $contador->datos;
-        $contacto = $datos->contacto;
-
-        DB::beginTransaction();
         try {
-            // 1. Actualizar Datos
-            if ($datos) {
-                $datos->update($validatedData['datos']);
-            }
+            // 1. Buscamos el contador
+            $contador = Contador::findOrFail($id);
 
-            // 2. Actualizar Contacto (si existe)
-            if ($contacto) {
-                $contacto->update($validatedData['contacto']);
-            }
+            // 2. Llamamos a la utilidad para hacer el trabajo
+            $updatedContador = $updater($contador, $validatedData);
 
-            // 3. Actualizar Usuario (Contador)
-            $usuarioData = [
-                'username' => $validatedData['usuario']['username'],
-                'estado' => $validatedData['usuario']['estado'], // Actualizamos estado
-            ];
-            
-            // Solo actualiza la contraseña si se envió una nueva
-            if (!empty($validatedData['usuario']['password'])) {
-                $usuarioData['password'] = Hash::make($validatedData['usuario']['password']);
-            }
-            
-            $contador->update($usuarioData);
-
-            DB::commit();
-
-            // Devolvemos el modelo actualizado con sus relaciones
-            $contador->load('datos.contacto');
+            // 3. Devolvemos la respuesta exitosa
             return response()->json([
                 'message' => 'Contador actualizado exitosamente.',
-                'contador' => $contador
+                'contador' => $updatedContador
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Contador no encontrado.'], 404);
+        
+        } catch (Exception $e) {
+            // Capturamos cualquier error lanzado por la utilidad
             DB::rollBack();
             Log::error("Error al actualizar contador $id: " . $e->getMessage());
             return response()->json(['message' => 'Error interno al actualizar el contador.', 'error' => $e->getMessage()], 500);
