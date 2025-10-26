@@ -21,6 +21,8 @@ Route::middleware(['auth.jwt', 'checkRoleMW:admin'])->group(function () {
 
     // Ruta para crear un nuevo contador
     Route::post('/contador/store', [ContadorController::class, 'store']);
+    // Ruta para listar los contadores
+    Route::get('/contadores', [ContadorController::class, 'index']);
 
 });
 

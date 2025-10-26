@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Contador;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Contador\utilities\StoreContador;
 use App\Http\Requests\Contador\StoreContadorRequest;
+use App\Models\Contador;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 // Ya no necesitas importar:
 // - Request, DB, Hash, ValidationException, Contador, Datos, Contacto
@@ -41,6 +43,30 @@ class ContadorController extends Controller
                 'type' => 'error',
                 'message' => $e->getMessage(), // Mensaje de la excepción
                 'error' => 'Ocurrió un error interno al procesar la solicitud.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Muestra una lista paginada de contadores.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request)
+    {
+        try {
+            $contadores = Contador::with('datos')
+                                ->orderBy('id', 'desc')
+                                ->paginate(10);
+
+            return response()->json($contadores, 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error al listar contadores: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la lista de contadores.',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
