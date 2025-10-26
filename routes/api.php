@@ -19,6 +19,7 @@ Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
 Route::middleware(['auth.jwt', 'checkRoleMW:admin'])->group(function () { 
 
+//CRUD CONTADOR
     // Ruta para crear un nuevo contador
     Route::post('/contador/store', [ContadorController::class, 'store']);
     // Ruta para listar los contadores
