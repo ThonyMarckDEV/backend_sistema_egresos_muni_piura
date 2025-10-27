@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPassword\PasswordResetController;
 use App\Http\Controllers\Categoria\CategoriaController;
 use App\Http\Controllers\Contador\ContadorController;
+use App\Http\Controllers\Egreso\EgresoController;
 use App\Http\Controllers\JefeContabilidad\JefeContabilidadController;
 use App\Http\Controllers\Proveedor\ProveedorController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,11 @@ Route::middleware(['auth.jwt', 'checkRoleMW:contador'])->group(function () {
     Route::put('/categoria/{id}', [CategoriaController::class, 'update']);
     Route::get('/categorias/all', [CategoriaController::class, 'getAll']);
 
+    //CRUD EGRESOS
+    Route::post('/egreso/store', [EgresoController::class, 'store']);
+    Route::get('/egresos', [EgresoController::class, 'index']);
+    Route::get('/egreso/{id}', [EgresoController::class, 'show']);
+    Route::put('/egreso/{id}', [EgresoController::class, 'update']);
 });
 
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
