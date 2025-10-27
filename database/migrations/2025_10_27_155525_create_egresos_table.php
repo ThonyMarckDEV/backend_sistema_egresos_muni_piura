@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             // Monto del egreso (10 dígitos en total, 2 decimales). No puede ser negativo.
-            $table->unsignedDecimal('monto', 10, 2); 
+            $table->decimal('monto', 10, 2)->unsigned(); 
             
             // Llave foránea para la categoría (obligatoria)
             $table->foreignId('categoria_id')

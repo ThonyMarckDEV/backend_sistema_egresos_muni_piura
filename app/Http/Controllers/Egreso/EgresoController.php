@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Egreso;
 
-use App\Http\Controllers\Egreso\utilities\StoreEgreso;
-use App\Http\Controllers\Egreso\utilities\UpdateEgreso;
+
 use App\Models\Egreso;
 use App\Http\Controllers\Controller;
 // Imports de Requests
 use App\Http\Requests\Egreso\StoreEgresoRequest;
 use App\Http\Requests\Egreso\UpdateEgresoRequest;
 // Imports de Utilities
-
+use App\Http\Controllers\Egreso\utilities\StoreEgreso;
+use App\Http\Controllers\Egreso\utilities\UpdateEgreso;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;

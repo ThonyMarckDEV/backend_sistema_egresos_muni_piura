@@ -68,9 +68,17 @@ Route::middleware(['auth.jwt', 'checkRoleMW:jefe_contabilidad'])->group(function
     Route::get('/proveedores', [ProveedorController::class, 'index']);
     Route::get('/proveedor/{id}', [ProveedorController::class, 'show']);
     Route::put('/proveedor/{id}', [ProveedorController::class, 'update']);
+
+});
+
+// RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
+Route::middleware(['auth.jwt', 'CheckRolesMW_CONTADOR_JEFE_CONTABILIDAD'])->group(function () { 
+
     Route::get('/proveedores/all', [ProveedorController::class, 'getAll']);
 
 });
+
+    
 
 
 

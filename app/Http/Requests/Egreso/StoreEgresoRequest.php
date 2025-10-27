@@ -6,11 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEgresoRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true; // Asumimos que la autorización se maneja en otro lugar
-    }
-
     public function rules()
     {
         return [

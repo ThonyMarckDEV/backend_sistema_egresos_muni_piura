@@ -2,7 +2,7 @@
 
 use App\Http\Middleware\CheckRoleMW;
 use App\Http\Middleware\CheckRolesMW;
-use App\Http\Middleware\CheckRolesMW_ADMIN_USUARIO;
+use App\Http\Middleware\CheckRolesMW_CONTADOR_JEFE_CONTABILIDAD;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\JWTAuthMiddleware;
 use Illuminate\Foundation\Application;
@@ -23,8 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'checkRoleMW' => CheckRoleMW::class,
             //MIDDLEWARE PARA VERIFICAR ROL MULTIPLE
             'checkRolesMW' => CheckRolesMW::class,
-            //MIDDLEWARE PARA ROL ADMIN Y USUARIO
-            'CheckRolesMW_ADMIN_USUARIO' => CheckRolesMW_ADMIN_USUARIO::class,
+            //MIDDLEWARE PARA ROL CONTADOR Y JEFE CONTABILIDAD
+            'CheckRolesMW_CONTADOR_JEFE_CONTABILIDAD' => CheckRolesMW_CONTADOR_JEFE_CONTABILIDAD::class,
 
             'auth.jwt' => JWTAuthMiddleware::class,
             //MIDDLEWARE CORS
