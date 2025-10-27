@@ -38,7 +38,6 @@ class CategoriaController extends Controller
     public function getAll(Request $request)
     {
         try {
-            // Usamos .get() en lugar de .paginate()
             $categorias = Categoria::orderBy('nombre', 'asc')->get();
             return response()->json($categorias, 200);
 
