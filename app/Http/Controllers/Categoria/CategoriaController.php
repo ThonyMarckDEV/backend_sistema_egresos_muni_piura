@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Categorias;
+namespace App\Http\Controllers\Categoria;
 
 use App\Models\Categoria;
 use App\Http\Controllers\Controller;

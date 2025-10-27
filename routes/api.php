@@ -3,7 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\Auth\ResetPassword\PasswordResetController;
-use App\Http\Controllers\Categorias\CategoriaController;
+use App\Http\Controllers\Categoria\CategoriaController;
 use App\Http\Controllers\Contador\ContadorController;
 use App\Http\Controllers\JefeContabilidad\JefeContabilidadController;
 use Illuminate\Support\Facades\Route;
