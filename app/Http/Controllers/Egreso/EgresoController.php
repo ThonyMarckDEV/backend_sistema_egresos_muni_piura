@@ -19,17 +19,22 @@ use Exception;
 
 class EgresoController extends Controller
 {
-    /**
+/**
      * Muestra una lista paginada de egresos.
+     * Incluye información sobre si ya tiene una cuenta por pagar asociada.
      */
     public function index(Request $request)
     {
         try {
-            // Eager loading para evitar N+1 queries
-            $egresos = Egreso::with(['categoria', 'proveedor'])
-                             ->orderBy('created_at', 'desc') // Ordenar por más reciente
+            // --- LÍNEA MODIFICADA ---
+            // Añadimos 'cuentaPorPagar' al eager loading
+            $egresos = Egreso::with(['categoria', 'proveedor', 'cuentaPorPagar']) 
+                             ->orderBy('created_at', 'desc') 
                              ->paginate(10);
                              
+            // Ahora cada egreso en la respuesta JSON tendrá una propiedad 'cuenta_por_pagar'
+            // que será null si no existe, o un objeto si sí existe.
+            
             return response()->json($egresos, 200);
 
         } catch (Exception $e) {
@@ -65,14 +70,18 @@ class EgresoController extends Controller
         }
     }
 
-    /**
+/**
      * Muestra un egreso específico.
+     * Incluye información de su cuenta por pagar si existe.
      */
     public function show($id)
     {
         try {
-            // Eager loading para la vista de detalle
-            $egreso = Egreso::with(['categoria', 'proveedor'])->findOrFail($id);
+            // --- LÍNEA MODIFICADA ---
+            // Añadimos 'cuentaPorPagar' al eager loading
+            $egreso = Egreso::with(['categoria', 'proveedor', 'cuentaPorPagar'])->findOrFail($id);
+            
+            // Ahora la respuesta JSON incluirá 'cuenta_por_pagar' (null o el objeto)
             return response()->json($egreso, 200);
 
         } catch (ModelNotFoundException $e) {
