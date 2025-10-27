@@ -64,6 +64,7 @@ Route::middleware(['auth.jwt', 'checkRoleMW:contador'])->group(function () {
     Route::post('/cuenta-por-pagar/store', [CuentaPorPagarController::class, 'store']);
     Route::get('/cuentas-por-pagar', [CuentaPorPagarController::class, 'index']);
     Route::get('/cuenta-por-pagar/{id}', [CuentaPorPagarController::class, 'show']);
+    Route::put('/cuenta-por-pagar/{id}/pagar', [CuentaPorPagarController::class, 'marcarComoPagado']);
 });
 
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)

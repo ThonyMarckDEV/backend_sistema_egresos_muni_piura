@@ -16,6 +16,8 @@ class CuentaPorPagar extends Model
         'fecha_vencimiento',
         'estado',
         'monto_pagado',
+        'metodo_pago',
+        'numero_operacion'
     ];
 
     /**

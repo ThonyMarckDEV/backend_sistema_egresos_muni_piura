@@ -31,6 +31,9 @@ return new class extends Migration
             // 4. Para pagos parciales (opcional pero recomendado)
             $table->decimal('monto_pagado', 10, 2)->default(0);
 
+            $table->string('metodo_pago', 50)->nullable(); // Efectivo, Deposito, Yape, Plin, etc.
+            $table->string('numero_operacion')->nullable(); // Para transferencias, yape, plin...
+
             $table->timestamps();
         });
     }
