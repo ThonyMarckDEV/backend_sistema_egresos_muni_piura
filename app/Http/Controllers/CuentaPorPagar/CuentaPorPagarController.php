@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\CuentaPorPagar;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CuentaPorPagar\utilities\MarcarPagado;
 use App\Http\Requests\CuentaPorPagar\PagarCuentaRequest;
 use App\Models\CuentaPorPagar;
 use App\Http\Requests\CuentaPorPagar\StoreCuentaPorPagarRequest;
-// Opcional: Si necesitas el modelo Egreso para validaciones extra
-// use App\Models\Egreso; 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class CuentaPorPagarController extends Controller
 {
@@ -79,53 +79,42 @@ class CuentaPorPagarController extends Controller
     }
 
     /**
-     * Marca una cuenta por pagar como pagada y registra los detalles.
+     * Marca una cuenta por pagar como pagada usando la Utility.
      */
-    public function marcarComoPagado(PagarCuentaRequest $request, $id)
+    public function marcarComoPagado(PagarCuentaRequest $request, MarcarPagado $marcarPagadoUtility, $id) // Inyecta la Utility
     {
-        // Usamos una transacción por si algo falla
         DB::beginTransaction();
         try {
-            // Busca la cuenta o falla (404)
+            // 1. Busca la cuenta (con 'egreso' cargado, necesario para la utility)
             $cuenta = CuentaPorPagar::with('egreso')->findOrFail($id);
 
-            // Validación extra: No se puede pagar si ya está pagada
-            if ($cuenta->estado === 'pagado') {
-                return response()->json([
-                    'type' => 'error',
-                    'message' => 'Esta cuenta ya ha sido marcada como pagada.',
-                ], 409); // 409 Conflict
-            }
+            // 2. Llama a la Utility para hacer la lógica de actualización
+            $cuentaActualizada = $marcarPagadoUtility->execute($cuenta, $request->validated());
 
-            $validatedData = $request->validated();
-
-            // Actualizamos la cuenta
-            $cuenta->estado = 'pagado';
-            // Marcamos el monto total del egreso como pagado
-            $cuenta->monto_pagado = $cuenta->egreso->monto; 
-            $cuenta->metodo_pago = $validatedData['metodo_pago'];
-            // Guarda null si es 'Efectivo', sino el número ingresado
-            $cuenta->numero_operacion = ($validatedData['metodo_pago'] === 'Efectivo') ? null : $validatedData['numero_operacion'];
-            
-            $cuenta->save();
-
-            DB::commit(); // Todo OK, confirma los cambios
+            DB::commit(); // Todo OK
 
             return response()->json([
                 'type' => 'success',
                 'message' => 'Cuenta marcada como pagada exitosamente.',
-                'cuenta_por_pagar' => $cuenta->fresh()->load('egreso.proveedor') // Devuelve actualizada
+                // Devuelve la cuenta actualizada por la utility, cargando proveedor si es necesario
+                'cuenta_por_pagar' => $cuentaActualizada->load('egreso.proveedor')
             ], 200);
 
         } catch (ModelNotFoundException $e) {
-            DB::rollBack(); // Revierte si no se encontró
+            DB::rollBack();
             return response()->json(['message' => 'Cuenta por pagar no encontrada.'], 404);
+        } catch (ConflictHttpException $e) { 
+            DB::rollBack();
+             return response()->json([
+                 'type' => 'error',
+                 'message' => $e->getMessage(),
+             ], 409); 
         } catch (Exception $e) {
-            DB::rollBack(); // Revierte en cualquier otro error
+            DB::rollBack();
             Log::error("Error al marcar como pagada la cuenta $id: " . $e->getMessage());
             return response()->json([
                 'type' => 'error',
-                'message' => 'Error interno al actualizar la cuenta por pagar.', 
+                'message' => 'Error interno al actualizar la cuenta por pagar.',
                 'error' => $e->getMessage()
             ], 500);
         }
