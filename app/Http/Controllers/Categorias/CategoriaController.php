@@ -103,22 +103,4 @@ class CategoriaController extends Controller
         }
     }
 
-    /**
-     * Elimina una categoría.
-     */
-    public function destroy($id)
-    {
-        try {
-            $categoria = Categoria::findOrFail($id);
-            $categoria->delete();
-
-            return response()->json(['message' => 'Categoría eliminada exitosamente.'], 200);
-
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Categoría no encontrada.'], 404);
-        } catch (Exception $e) {
-             Log::error("Error al eliminar categoría $id: " . $e->getMessage());
-            return response()->json(['message' => 'Error interno al eliminar la categoría.'], 500);
-        }
-    }
 }
