@@ -32,6 +32,25 @@ class CategoriaController extends Controller
         }
     }
 
+   /**
+     * Obtiene TODAS las categorías (para comboboxes).
+     */
+    public function getAll(Request $request)
+    {
+        try {
+            // Usamos .get() en lugar de .paginate()
+            $categorias = Categoria::orderBy('nombre', 'asc')->get();
+            return response()->json($categorias, 200);
+
+        } catch (Exception $e) {
+            Log::error('Error al obtener todas las categorías: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la lista de categorías.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Almacena una nueva categoría.
      */
@@ -102,5 +121,6 @@ class CategoriaController extends Controller
             return response()->json(['message' => 'Error interno al actualizar la categoría.', 'error' => $e->getMessage()], 500);
         }
     }
+    
 
 }
