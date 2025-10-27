@@ -14,8 +14,8 @@ class UpdateProveedorRequest extends FormRequest
 
         return [
             'nombre' => 'required|string|max:255',
-            'ruc' => 'nullable|string|size:11|unique:proveedors,ruc,' . $proveedorId,
-            'dni' => 'nullable|string|size:8|unique:proveedors,dni,' . $proveedorId,
+            'ruc' => 'nullable|string|size:11|unique:proveedores,ruc,' . $proveedorId,
+            'dni' => 'nullable|string|size:8|unique:proveedores,dni,' . $proveedorId,
             'descripcion' => 'nullable|string',
             'estado' => 'required|integer|in:0,1',
         ];

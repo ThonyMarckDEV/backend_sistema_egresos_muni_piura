@@ -10,8 +10,8 @@ class StoreProveedorRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|max:255',
-            'ruc' => 'nullable|string|size:11|unique:proveedors,ruc',
-            'dni' => 'nullable|string|size:8|unique:proveedors,dni',
+            'ruc' => 'nullable|string|size:11|unique:proveedores,ruc',
+            'dni' => 'nullable|string|size:8|unique:proveedores,dni',
             'descripcion' => 'nullable|string',
             'estado' => 'required|integer|in:0,1',
         ];

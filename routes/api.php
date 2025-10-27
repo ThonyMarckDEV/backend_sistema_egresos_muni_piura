@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ResetPassword\PasswordResetController;
 use App\Http\Controllers\Categoria\CategoriaController;
 use App\Http\Controllers\Contador\ContadorController;
 use App\Http\Controllers\JefeContabilidad\JefeContabilidadController;
+use App\Http\Controllers\Proveedor\ProveedorController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -52,6 +53,20 @@ Route::middleware(['auth.jwt', 'checkRoleMW:contador'])->group(function () {
     Route::get('/categorias/all', [CategoriaController::class, 'getAll']);
 
 });
+
+// RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
+Route::middleware(['auth.jwt', 'checkRoleMW:jefe_contabilidad'])->group(function () { 
+
+    //CRUD PROVEEDOR
+    Route::post('/proveedor/store', [ProveedorController::class, 'store']);
+    Route::get('/proveedores', [ProveedorController::class, 'index']);
+    Route::get('/proveedor/{id}', [ProveedorController::class, 'show']);
+    Route::put('/proveedor/{id}', [ProveedorController::class, 'update']);
+    Route::get('/proveedores/all', [ProveedorController::class, 'getAll']);
+
+});
+
+
 
 
 // RUTAS PARA VARIOS ROLES
