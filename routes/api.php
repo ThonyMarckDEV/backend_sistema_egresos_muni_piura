@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\Auth\ResetPassword\PasswordResetController;
+use App\Http\Controllers\Categorias\CategoriaController;
 use App\Http\Controllers\Contador\ContadorController;
 use App\Http\Controllers\JefeContabilidad\JefeContabilidadController;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,7 @@ Route::middleware(['auth.jwt', 'checkRoleMW:admin'])->group(function () {
     // Actualizar un contador (usamos PUT para la actualización)
     Route::put('/contador/{id}', [ContadorController::class, 'update']);
 
-//CRUD JEF CONTABILIDAD
+//CRUD JEFE CONTABILIDAD
     // Ruta para crear un nuevo jefe contabilidad
     Route::post('/jefe-contabilidad/store', [JefeContabilidadController::class, 'store']);
     // Ruta para listar los jefes de contabilidad
@@ -43,7 +44,12 @@ Route::middleware(['auth.jwt', 'checkRoleMW:admin'])->group(function () {
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
 Route::middleware(['auth.jwt', 'checkRoleMW:contador'])->group(function () { 
 
-
+    //CRUD CATEGORIAS
+    Route::post('/categoria/store', [CategoriaController::class, 'store']);
+    Route::get('/categorias', [CategoriaController::class, 'index']);
+    Route::get('/categoria/{id}', [CategoriaController::class, 'show']);
+    Route::put('/categoria/{id}', [CategoriaController::class, 'update']);
+    Route::delete('/categoria/{id}', [CategoriaController::class, 'destroy']);
 
 });
 
