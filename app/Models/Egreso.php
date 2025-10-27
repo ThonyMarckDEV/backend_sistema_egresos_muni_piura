@@ -44,4 +44,12 @@ class Egreso extends Model
         // 'withDefault' evita errores si el proveedor es nulo
         return $this->belongsTo(Proveedor::class, 'proveedor_id')->withDefault();
     }
+
+    /**
+     * Relación: Un egreso (si es a crédito) tiene UNA cuenta por pagar.
+     */
+    public function cuentaPorPagar()
+    {
+        return $this->hasOne(CuentaPorPagar::class, 'egreso_id');
+    }
 }
