@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ResetPassword\PasswordResetController;
 use App\Http\Controllers\Categoria\CategoriaController;
 use App\Http\Controllers\Contador\ContadorController;
 use App\Http\Controllers\CuentaPorPagar\CuentaPorPagarController;
+use App\Http\Controllers\DashboardContador\DashboardContadorController;
 use App\Http\Controllers\Egreso\EgresoController;
 use App\Http\Controllers\JefeContabilidad\JefeContabilidadController;
 use App\Http\Controllers\Proveedor\ProveedorController;
@@ -65,6 +66,9 @@ Route::middleware(['auth.jwt', 'checkRoleMW:contador'])->group(function () {
     Route::get('/cuentas-por-pagar', [CuentaPorPagarController::class, 'index']);
     Route::get('/cuenta-por-pagar/{id}', [CuentaPorPagarController::class, 'show']);
     Route::put('/cuenta-por-pagar/{id}/pagar', [CuentaPorPagarController::class, 'marcarComoPagado']);
+
+    //DASHBOARD
+    Route::get('/dashboard-data-contador', [DashboardContadorController::class, 'getContadorDashboardData']);
 });
 
 // RUTAS PARA cliente VALIDADA POR MIDDLEWARE AUTH (PARA TOKEN JWT) Y CHECKROLE (PARA VALIDAR ROL DEL TOKEN)
